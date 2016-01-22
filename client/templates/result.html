@@ -1,0 +1,18 @@
+<template name="results">
+  <div class="row">
+    <div class="col-md-6">
+      <ul>
+        {{#each leftResults}}
+          <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    </div>
+    <div class="col-md-6"> 
+      <ul>
+        {{#each rightResults}}
+          <li>{{this}}</li>
+        {{/each}}  
+      </ul>
+    </div>
+  </div>
+</template>
