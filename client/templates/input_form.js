@@ -5,12 +5,12 @@ Template.inputForm.events({
     
     originLeftText = $(e.target).find('#left-input').val();
     originRightText = $(e.target).find('#right-input').val();
-
+    
     leftInput = originLeftText.replace(/[\r\n]/g,"");
     rightInput = originRightText.replace(/[\r\n]/g,"");
 
     prefixKey = $(e.target).find('#prefix-key').val();
-    
+
     leftTextGroup = takeApartElement(leftInput, []);
     rightTextGroup = takeApartElement(rightInput, []);
 
@@ -38,18 +38,20 @@ function trim(str){
   for(var i=str.length-1; i>=0; i--){   
     if(/\S/.test(str.charAt(i))){   
       str = str.substring(0, i+1);   
-      break;   
+      break;
     }   
   }   
   return str;   
 }; 
-        
+
 function takeApartElement(stringGroup, arr){
   $(stringGroup).each(function(){
-    if ( $(this).children().length > 1) {
+    if ( $(this).children().length > 0 && $(this).children('strong').length == 0 && $(this).children('em').length == 0 && $(this).children('span').length == 0 && $(this).children('b').length == 0) {
       _this = $(this).children();
       takeApartElement($(_this), arr);
-    } else if( !!$(this).children() && $(this).text().length > 0){
+    } else if ($(this).children().length > 0) {
+      arr.push($(this).html());
+    } else if( !!$(this).children() && $(this).text().length > 1){
       arr.push($(this).text());
     };
   })
@@ -60,11 +62,15 @@ function takeApartElement(stringGroup, arr){
 function hashStringToKey(stringGroup){
   key = new Array();
   ymlKey = new Array();
+  strNum = 1;
+  parNum = 1;
   for (var i =0; i < stringGroup.length; i++) {
     if ( 20 < stringGroup[i].length &&  stringGroup[i].length <= 40) {
-      key_hash = "str" + i.toString();
+      key_hash = "str" + strNum.toString();
+      strNum++;
     } else if( 40 < stringGroup[i].length ) {
-      key_hash = "paragraph" + i.toString();
+      key_hash = "paragraph" + parNum.toString();
+      parNum++;
     } else{
       key_hash = trim(stringGroup[i]).replace(/\ +/g,"_").toLowerCase();
     };
