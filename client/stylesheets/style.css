@@ -11,6 +11,8 @@ body {
   background: #eee;
   color: #666666; }
 
+p.white-space:pre;
+
 .text-center
 {
   text-align: center;
@@ -26,21 +28,36 @@ body {
   .navbar .navbar-inner {
     border-radius: 0px 0px 3px 3px; }
 
+.text-form{
+    white-space:pre;
+}
 
 .go-button{
   margin: 5px;
-  padding: 0px 0px;
-  width: 70px;
-  height: 34px;
-}
-
-.framework-select{
-  margin: 0px;
-  padding: 0px 0px;
+  padding: 0px;
   width: 70px;
   height: 35px;
 }
 
+.framework-select{
+  margin: 5px;
+  padding: 0px;
+  width: 70px;
+  height: 35px;
+  line-height: 20px;
+}
+
 #spinner {
   height: 300px; }
+
+.result-page{
+}
+
+.pre-space{
+  white-space:pre;
+}
+
+.result-tab {
+  list-style: none;
+}
 

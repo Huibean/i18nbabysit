@@ -1,19 +1,22 @@
 <template name="inputForm">
-<form>
-<div class="row">
-  <div class="col-md-6">
-    <textarea class="form-control" rows="12" id="left-input" value= "<div><p>hello</p><p>world</p><p><span>foo</span></p></div><div><h1>bar</h1></div><div>Tom</div>"></textarea>
-  </div>
-  <div class="col-md-6">
-   <textarea class="form-control" rows="12" id="right-input" ></textarea>
-  </div>
-</div>
-<div class="clearfix">
-    <select class="form-control framework-select btn btn-default">
-      <option value="rails">Rails</option>
-      <option value="meteor">Meteor</option>
-    </select>
-    <button type="submit" class="btn btn-success go-button">Go</button>
-</div>
-</form>
+  <form>
+    <div class="row">
+      <div class="col-md-6">
+        <textarea class="form-control" rows="12" id="left-input" ></textarea>
+      </div>
+      <div class="col-md-6">
+       <textarea class="form-control" rows="12" id="right-input" ></textarea>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <input type="text" class="form-control" id="prefix-key" placeholder="first_key.second_key.third_key">
+    </div>
+    <div class="col-md-12" style="text-align:center">
+      <select class="form-control framework-select btn btn-default">
+        <option value="rails">Rails</option>
+        <option value="meteor">Meteor</option>
+      </select>
+      <button type="submit" class="btn btn-success go-button">Go</button>
+    </div>
+  </form>
 </template>

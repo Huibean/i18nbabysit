@@ -1,18 +1,33 @@
 <template name="results">
-  <div class="row">
-    <div class="col-md-6">
-      <ul>
-        {{#each leftResults}}
-          <li>{{this}}</li>
-        {{/each}}
-      </ul>
+  <div class="row result-page">
+    <div class="col-md-6 text-warp">
+      <h3>Rails Erb</h3>
+      <code class="pre-space">{{erbText}}</code>
     </div>
-    <div class="col-md-6"> 
-      <ul>
-        {{#each rightResults}}
-          <li>{{this}}</li>
-        {{/each}}  
-      </ul>
+    <div class="col-md-3 key-warp">
+      <h3>Yml Code</h3>
+      <h5>Left</h5>
+      <code>
+        <ul>
+          {{#each prefixKeys}}
+            <li class="result-tab pre-space">{{this}}</li>
+          {{/each}}
+          {{#each leftResults}}
+            <li class="result-tab pre-space">{{this}}</li>
+          {{/each}}
+        </ul>
+      </code>
+      <h5>Right</h5>
+      <code>
+        <ul>
+          {{#each prefixKeys}}
+            <li class="result-tab pre-space">{{this}}</li>
+          {{/each}}      
+          {{#each rightResults}}
+            <li class="result-tab pre-space">{{this}}</li>
+          {{/each}}  
+        </ul>
+      </code>
     </div>
   </div>
 </template>
