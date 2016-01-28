@@ -1,7 +1,7 @@
 # i8nbabysit
 demo http://i8nbabysit.com/
 
-![](/intro.gif)
+![](http://i8nbabysit.com/intro.gif)
 
 使用方法：
 *因为yml的key值生成决定于左边的输入框，所以英文的html必须输入在左方*
