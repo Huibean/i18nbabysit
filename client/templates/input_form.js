@@ -3,25 +3,28 @@ Template.inputForm.events({
     e.preventDefault();
     Session.set("resultId", "");
     
-    originLeftText = $(e.target).find('#left-input').val();
-    originRightText = $(e.target).find('#right-input').val();
+    var originLeftText = $(e.target).find('#left-input').val();
+    var originRightText = $(e.target).find('#right-input').val();
     
-    leftInput = originLeftText.replace(/[\r\n]/g,"");
-    rightInput = originRightText.replace(/[\r\n]/g,"");
+    var leftInput = originLeftText.replace(/[\r\n]/g,"");
+    var rightInput = originRightText.replace(/[\r\n]/g,"");
 
-    prefixKey = $(e.target).find('#prefix-key').val();
+    var prefixKey = $(e.target).find('#prefix-key').val();
+    
+    var useHtmlSafe = $(e.target).find('#html-safe-status:checked').length;
+    console.log(useHtmlSafe);
 
-    leftTextGroup = takeApartElement(leftInput, []);
-    rightTextGroup = takeApartElement(rightInput, []);
+    var leftTextGroup = takeApartElement(leftInput, []);
+    var rightTextGroup = takeApartElement(rightInput, []);
 
-    keyGroup = hashStringToKey(leftTextGroup)[0];
+    var keyGroup = hashStringToKey(leftTextGroup)[0];
 
-    ymlKeyGroup = hashStringToKey(leftTextGroup)[1];
+    var ymlKeyGroup = hashStringToKey(leftTextGroup)[1];
 
-    prefixKeyGroup = ymlPrefixKey(prefixKey);
+    var prefixKeyGroup = ymlPrefixKey(prefixKey);
 
-    leftYml = matchKeyAndValue(ymlKeyGroup, leftTextGroup);
-    rightYml = matchKeyAndValue(ymlKeyGroup, rightTextGroup);
+    var leftYml = matchKeyAndValue(ymlKeyGroup, leftTextGroup, useHtmlSafe);
+    var rightYml = matchKeyAndValue(ymlKeyGroup, rightTextGroup, useHtmlSafe);
     
     htmlText = processText(originLeftText, keyGroup, leftTextGroup, prefixKey);
 
@@ -46,11 +49,17 @@ function trim(str){
 
 function takeApartElement(stringGroup, arr){
   $(stringGroup).each(function(){
-    if ( $(this).children().length > 0 && $(this).children('strong').length == 0 && $(this).children('em').length == 0 && $(this).children('span').length == 0 && $(this).children('b').length == 0) {
+    console.log(this);
+    if ( $(this).children().length > 0 && $(this).children('strong').length == 0 && $(this).children('em').length == 0 && $(this).children('span').length == 0 && $(this).children('b').length == 0 ) {
       _this = $(this).children();
       takeApartElement($(_this), arr);
-    } else if ($(this).children().length > 0) {
-      arr.push($(this).html());
+    } else if ($(this).children().length > 0 ) {
+      if ($(this).text() == $(this).children().text()) {
+        _this = $(this).children();
+        takeApartElement($(_this), arr);
+      } else {
+        arr.push($(this).html());
+      };
     } else if( !!$(this).children() && $(this).text().length > 1){
       arr.push($(this).text());
     };
@@ -77,13 +86,25 @@ function hashStringToKey(stringGroup){
     ymlKey.push(key_hash + ":");
     key.push(key_hash);
   };
-  return [key, ymlKey] ;
+  return [key, ymlKey];
 };
 
-function matchKeyAndValue(keyGroup, ValueGroup){
-  hashGroup = new Array();
+function stringAddHtmlSafe(str){
+  var handledStr = str;
+  if ($("<p>" + handledStr + "</p>" ).children().length > 0) {
+    handledStr = "'" + handledStr + "'.html_safe";
+  };
+  return handledStr;
+};
+
+function matchKeyAndValue(keyGroup, ValueGroup, useHtmlSafe){
+   hashGroup = new Array();
   for (var i = 0; i < keyGroup.length; i++) {
-   hash_line = keyGroup[i] + " " + trim( ValueGroup[i].replace(/[\r\n]/g,"") ) + "\n";
+   if (useHtmlSafe) {
+     hash_line = keyGroup[i] + " " + stringAddHtmlSafe(trim( ValueGroup[i].replace(/[\r\n]/g,"") )) + "\n";
+   } else {
+     hash_line = keyGroup[i] + " " + trim( ValueGroup[i].replace(/[\r\n]/g,"") ) + "\n";
+   };
    hashGroup.push(hash_line);
   };
   return hashGroup;
