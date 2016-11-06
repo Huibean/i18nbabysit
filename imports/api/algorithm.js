@@ -1,42 +1,36 @@
-Template.inputForm.events({
-  'submit form' : function(e){
-    e.preventDefault();
-    Session.set("resultId", "");
-    
-    var originLeftText = $(e.target).find('#left-input').val();
-    var originRightText = $(e.target).find('#right-input').val();
-    
-    var leftInput = originLeftText.replace(/[\r\n]/g,"");
-    var rightInput = originRightText.replace(/[\r\n]/g,"");
+const operateText = (texts, prefix) => {
+  console.log("args:", texts, prefix)
+  let prefixKey = prefix;
+  let useHtmlSafe = true;
 
-    var prefixKey = $(e.target).find('#prefix-key').val();
-    
-    var useHtmlSafe = $(e.target).find('#html-safe-status:checked').length;
-    console.log(useHtmlSafe);
+  let keyGroup;
+  let translateCodes = [];
+  let ymlKeyGroup;
+  let prefixKeyGroup;
+  let htmlText;
 
-    var leftTextGroup = takeApartElement(leftInput, []);
-    var rightTextGroup = takeApartElement(rightInput, []);
+  texts.map((text, index) => {
+    let formatedText = text.replace(/[\r\n]/g,"")
+    let textGroup = takeApartElement(formatedText, []);
+    if( index == 0 ) {
+      keyGroup = hashStringToKey(textGroup)[0];
+      ymlKeyGroup = hashStringToKey(textGroup)[1];
+      prefixKeyGroup = ymlPrefixKey(prefixKey);
+      htmlText = processText(text, keyGroup, textGroup, prefixKey);
+    }
+    translateCodes.push(matchKeyAndValue(ymlKeyGroup, textGroup, useHtmlSafe))
+  })
 
-    var keyGroup = hashStringToKey(leftTextGroup)[0];
-
-    var ymlKeyGroup = hashStringToKey(leftTextGroup)[1];
-
-    var prefixKeyGroup = ymlPrefixKey(prefixKey);
-
-    var leftYml = matchKeyAndValue(ymlKeyGroup, leftTextGroup, useHtmlSafe);
-    var rightYml = matchKeyAndValue(ymlKeyGroup, rightTextGroup, useHtmlSafe);
-    
-    htmlText = processText(originLeftText, keyGroup, leftTextGroup, prefixKey);
-
-    resultId = wrireYml(prefixKey, prefixKeyGroup, leftYml, rightYml, htmlText);
-
-    Session.set("resultId", resultId);
-
-    Router.go('results', {_id: resultId});
+  return {
+    htmlText: htmlText,
+    prefixKey: prefixKeyGroup,
+    translateCodes: translateCodes
   }
-});
+  
+};
+export default operateText;
 
-function trim(str){
+const trim = (str) =>{
   str = str.replace(/^(\s|\u00A0)+/,'');   
   for(var i=str.length-1; i>=0; i--){   
     if(/\S/.test(str.charAt(i))){   
@@ -47,7 +41,7 @@ function trim(str){
   return str;   
 }; 
 
-function takeApartElement(stringGroup, arr){
+const takeApartElement = (stringGroup, arr) => {
   $(stringGroup).each(function(){
     console.log(this);
     if ( $(this).children().length > 0 && $(this).children('strong').length == 0 && $(this).children('em').length == 0 && $(this).children('span').length == 0 && $(this).children('b').length == 0 ) {
@@ -68,7 +62,7 @@ function takeApartElement(stringGroup, arr){
   return arr;
 };
 
-function hashStringToKey(stringGroup){
+const hashStringToKey = (stringGroup) => {
   key = new Array();
   ymlKey = new Array();
   strNum = 1;
@@ -89,7 +83,7 @@ function hashStringToKey(stringGroup){
   return [key, ymlKey];
 };
 
-function stringAddHtmlSafe(str){
+const stringAddHtmlSafe = (str) => {
   var handledStr = str;
   if ($("<p>" + handledStr + "</p>" ).children().length > 0) {
     handledStr = "'" + handledStr + "'.html_safe";
@@ -97,7 +91,7 @@ function stringAddHtmlSafe(str){
   return handledStr;
 };
 
-function matchKeyAndValue(keyGroup, ValueGroup, useHtmlSafe){
+const matchKeyAndValue = (keyGroup, ValueGroup, useHtmlSafe) => {
    hashGroup = new Array();
   for (var i = 0; i < keyGroup.length; i++) {
    if (useHtmlSafe) {
@@ -110,7 +104,7 @@ function matchKeyAndValue(keyGroup, ValueGroup, useHtmlSafe){
   return hashGroup;
 };
 
-function textWithKeyForRails(prefixKey, key){
+const textWithKeyForRails = (prefixKey, key) => {
   if (prefixKey.length > 0) {
     text = "<%= t('" + prefixKey + '.' + key + "') %>"
   } else {
@@ -119,7 +113,7 @@ function textWithKeyForRails(prefixKey, key){
   return text;
 };
 
-function processText(text, keyGroup, ValueGroup, prefixKey){
+const processText = (text, keyGroup, ValueGroup, prefixKey) => {
   processedText = text;
 
   for (var i = 0; i < ValueGroup.length; i++) {
@@ -135,14 +129,14 @@ function processText(text, keyGroup, ValueGroup, prefixKey){
   return processedText;
 };
 
-function ymlPrefixKey(prefixKey){
+const ymlPrefixKey = (prefixKey) => {
   originPrefixKey = prefixKey;
   prefixGroup = originPrefixKey.split('.');
   prefixKeyGroup = [];
   for (var i = 0; i < prefixGroup.length; i++) {
     end_str = ""
     if (originPrefixKey.length > 0) {  
-      end_str = ":";
+      end_str = ":\n";
     };
     begin_str = "";
     if (i > 0) {
