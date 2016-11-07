@@ -1,12 +1,39 @@
-# i8nbabysit
-demo http://i8nbabysit.com/
+<h1 align="center">i8nbabysit</h1>
+<h5 align="center">An Online tool to handle your I18n Stuff in seconds!</h5>
 
-![](http://i8nbabysit.com/intro.gif)
+##Tool url:
+https://i18nbabysit.herokuapp.com/ 
 
-使用方法：
-**因为yml的key值生成决定于左边的输入框，所以英文的html必须输入在左方**  
+##Usage
+Just input your Html code for multi language, and i8nbabysit will compile to 
+choosen html template and translate keys
 
-将需要处理的html文本填入到文本框之中，前缀key值填入到下方的输入框，然后点击Go  
+###Example: 
 
-就会的到一个Rails的erb文本，和两个yml文本，对应着相应的i18n翻译  
+####Input:
+english version html code
+```html
+<p>hello world</p>
+```
+french version html code
+```html
+<p>Bonjour le monde</p>
+```
+prefix key: greeting
 
+template: Rails erb
+
+####Output:
+html:
+```erb
+<p><%= t('greeting.hello_world') %></p>
+```
+key:
+```yml
+en:
+  greeting:
+    hello_world: hello world 
+fr:
+  greeting:
+    hello_world: Bonjour le monde  
+```
